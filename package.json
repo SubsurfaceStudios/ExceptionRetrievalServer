@@ -1,0 +1,25 @@
+{
+  "name": "exceptionretrievalserver",
+  "version": "1.0.0",
+  "description": "Fetch &amp; decryption server designed to be 100% seperate from the Compensation API and block all external HTTP requests for maximized privacy &amp; security.",
+  "main": "index.js",
+  "scripts": {
+    "fetch": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SubsurfaceStudios/ExceptionRetrievalServer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SubsurfaceStudios/ExceptionRetrievalServer/issues"
+  },
+  "homepage": "https://github.com/SubsurfaceStudios/ExceptionRetrievalServer#readme",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "mongodb": "^4.10.0",
+    "node-rsa": "^1.1.1"
+  }
+}
