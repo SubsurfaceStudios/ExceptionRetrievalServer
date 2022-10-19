@@ -9,7 +9,7 @@ const cfg = require('./private/config.json');
 const i = rl.createInterface(stdin, stdout);
 
 function query() {
-    i.question("Select an option: UPLOAD | DOWNLOAD | QUIT\n", async a => {
+    i.question("Select an option: UPLOAD | READ | DUMP | QUIT\n", async a => {
         switch (a.toLowerCase()) {
             case "upload": {
                 const r = new rsa()
@@ -35,7 +35,23 @@ function query() {
                 });
                 return;
             }
-            case "download": {
+            case "dump": {
+                const r = new rsa().importKey(fs.readFileSync(cfg.private_key_path).toString('utf-8'), cfg.private_key_format);
+    
+                var client = new mongo.MongoClient(cfg.mongodb_connection_string);
+                await client.connect();
+    
+                const data = (await client.db(cfg.mongodb_database_name).collection("exception_reports").find({_id: {$exists: true}}).toArray())
+                    .map(x => `            ${x._id}:\n\n${r.decrypt(x.data.buffer, 'buffer').toString('utf-8')}`);
+                
+                console.log("Data successfully decrypted locally, dumping to file.")
+                
+                fs.writeFileSync(cfg.dump_file_path, data.join("\n\n------------------------------------------------\n"));
+
+                console.log(`Data dumped to ${cfg.dump_file_path}`);
+                return;
+            }
+            case "read": {
                 const r = new rsa().importKey(fs.readFileSync(cfg.private_key_path).toString('utf-8'), cfg.private_key_format);
     
                 var client = new mongo.MongoClient(cfg.mongodb_connection_string);
