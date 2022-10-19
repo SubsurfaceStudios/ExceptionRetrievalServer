@@ -9,7 +9,7 @@ const cfg = require('./private/config.json');
 const i = rl.createInterface(stdin, stdout);
 
 function query() {
-    i.question("Select an option: UPLOAD | READ | DUMP | QUIT\n", async a => {
+    i.question("Select an option: UPLOAD | READ | DUMP | FLUSH | QUIT\n", async a => {
         switch (a.toLowerCase()) {
             case "upload": {
                 const r = new rsa()
@@ -64,8 +64,21 @@ function query() {
                 query();
                 return;
             }
+            case "flush": {
+                console.log("Flushing reports...");
+                var client = new mongo.MongoClient(cfg.mongodb_connection_string);
+                await client.connect();
+
+                await client.db(cfg.mongodb_database_name).collection("exception_reports").deleteMany({});
+                
+                console.log("Flushed all exception reports.");
+
+                query();
+                return;
+            }
             case "quit": {
                 process.exit(0);
+                return;
             }
             default: {
                 query();
