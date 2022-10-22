@@ -60,7 +60,10 @@ function query() {
                 const data = (await client.db(cfg.mongodb_database_name).collection("exception_reports").find({ _id: { $exists: true } }).toArray())
                     .map(x => r.decrypt(x.data.buffer, 'buffer').toString('utf-8'))
                     .map(x => JSON.parse(x))
-                    .map(x => delete x.stack_trace);
+                    .map(x => {
+                        delete x.stack_trace;
+                        return x;
+                    });
                 
                 console.table(data);
                 query();
