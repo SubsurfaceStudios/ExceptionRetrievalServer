@@ -57,8 +57,10 @@ function query() {
                 var client = new mongo.MongoClient(cfg.mongodb_connection_string);
                 await client.connect();
     
-                const data = (await client.db(cfg.mongodb_database_name).collection("exception_reports").find({_id: {$exists: true}}).toArray())
-                    .map(x => r.decrypt(x.data.buffer, 'buffer').toString('utf-8'));
+                const data = (await client.db(cfg.mongodb_database_name).collection("exception_reports").find({ _id: { $exists: true } }).toArray())
+                    .map(x => r.decrypt(x.data.buffer, 'buffer').toString('utf-8'))
+                    .map(x => JSON.parse(x))
+                    .map(x => delete x.stack_trace);
                 
                 console.table(data);
                 query();
